@@ -12,6 +12,6 @@ model = SceneGenerator()
 
 model.train(train, params.epochs)
 
-model.sample_images()
+model.sample_images("cpu")
 
 model.save_models("saved_models", epoch=params.epochs)

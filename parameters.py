@@ -1,5 +1,5 @@
-image_height = 128
-image_width = 128
+image_height = 32
+image_width = 32
 batch_size = 64
 epochs = 1000
 sample_interval = 25

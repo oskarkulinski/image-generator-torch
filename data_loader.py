@@ -1,5 +1,5 @@
 from torch.utils.data import DataLoader, Dataset
-from torchvision import datasets, transforms
+from torchvision import transforms
 from pathlib import Path
 from PIL import Image
 
