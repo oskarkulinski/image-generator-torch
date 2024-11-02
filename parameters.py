@@ -1,6 +1,6 @@
 image_height = 32
 image_width = 32
-batch_size = 64
+batch_size = 256
 epochs = 1000
 sample_interval = 25
 noise_dim = 100

@@ -4,6 +4,7 @@ import torch.nn.functional as F
 
 import parameters as params
 
+
 class Discriminator(nn.Module):
     def __init__(self):
         super(Discriminator, self).__init__()
@@ -15,7 +16,8 @@ class Discriminator(nn.Module):
         self.norm3 = nn.BatchNorm2d(64)
         self.conv4 = nn.Conv2d(64, 32, kernel_size=3, stride=2, padding=1)
         self.norm4 = nn.BatchNorm2d(32)
-        self.linear = nn.Linear(32 * 8 * 8, 1)
+        self.linear = nn.Linear(32 * 2 * 2, 1)
+        self._initialize_weights()
 
     def forward(self, x):
         x = self.conv1(x)
@@ -35,28 +37,13 @@ class Discriminator(nn.Module):
         x = F.sigmoid(x)
         return x
 
-'''def build_discriminator():
-    image_input = tf.keras.Input(shape=(params.image_height, params.image_width, 3), name='image_input')
-
-    conv2d_1 = tf.keras.layers.Conv2D(256, kernel_size=3, strides=2, padding='same')(image_input)
-    conv2d_1 = t    f.keras.layers.BatchNormalization(momentum=0.8)(conv2d_1)
-    conv2d_1 = tf.keras.layers.LeakyReLU(alpha=0.2)(conv2d_1)
-
-    conv2d_2 = tf.keras.layers.Conv2D(256, kernel_size=3, strides=2, padding='same')(conv2d_1)
-    conv2d_2 = tf.keras.layers.BatchNormalization(momentum=0.8)(conv2d_2)
-    conv2d_2 = tf.keras.layers.LeakyReLU(alpha=0.2)(conv2d_2)
-
-    conv2d_3 = tf.keras.layers.Conv2D(128, kernel_size=3, strides=2, padding='same')(conv2d_2)
-    conv2d_3 = tf.keras.layers.BatchNormalization(momentum=0.8)(conv2d_3)
-    conv2d_3 = tf.keras.layers.LeakyReLU(alpha=0.2)(conv2d_3)
-
-    conv2d_4 = tf.keras.layers.Conv2D(64, kernel_size=3, strides=2, padding='same')(conv2d_3)
-    conv2d_4 = tf.keras.layers.BatchNormalization(momentum=0.8)(conv2d_4)
-    conv2d_4 = tf.keras.layers.LeakyReLU(alpha=0.2)(conv2d_4)
-
-    flatten = tf.keras.layers.Flatten()(conv2d_3)
-    dense_1 = tf.keras.layers.Dense(1, activation='sigmoid')(flatten)
-
-    model = tf.keras.Model(image_input, outputs=dense_1)
-    return model
-'''
+    def _initialize_weights(self):
+        for m in self.modules():
+            if isinstance(m, nn.Conv2d):
+                nn.init.kaiming_normal_(m.weight, mode='fan_in', nonlinearity='leaky_relu')
+            elif isinstance(m, nn.Linear):
+                nn.init.xavier_normal_(m.weight)
+                nn.init.constant_(m.bias, 0)
+            elif isinstance(m, nn.BatchNorm2d):
+                nn.init.constant_(m.weight, 1)
+                nn.init.uniform_(m.bias, -1, 1)

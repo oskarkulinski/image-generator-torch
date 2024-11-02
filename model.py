@@ -38,7 +38,7 @@ class SceneGenerator:
             gen_loss_list = []
             disc_loss_list = []
             if epoch % 25 == 0:
-                fid = FrechetInceptionDistance().reset()
+                fid = FrechetInceptionDistance(device=device).reset()
             else:
                 fid = None
 
@@ -90,16 +90,16 @@ class SceneGenerator:
                                self.discriminator.parameters()])
 
                 if epoch % 25 == 0:
-                    fid = fid.update((real_images + 1)/2, True)
-                    fid = fid.update((fake_images + 1)/2, False)
+                    fid = fid.update((real_images + 1) / 2, True)
+                    fid = fid.update((fake_images + 1) / 2, False)
 
             g_loss = sum(gen_loss_list) / len(gen_loss_list)
             d_loss = sum(disc_loss_list) / len(disc_loss_list)
             end = time_ns()
 
-            print(f"{epoch}:"
-                  f"[D loss: {d_loss:.4f}] [G loss: {g_loss:.4f}] "
-                  f"[Time: {(end - start) * 0.000000001:.3f}s]" +
+            print((f"{epoch}:"
+                   f"[D loss: {d_loss:.4f}] [G loss: {g_loss:.4f}] "
+                   f"[Time: {(end - start) * 0.000000001:.3f}s]") +
                   "" if not fid else f"[FID: {fid.compute()}]")
 
             if epoch % params.sample_interval == 0:
