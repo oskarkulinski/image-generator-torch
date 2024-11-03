@@ -17,7 +17,7 @@ class SceneGenerator:
         self.discriminator = Discriminator()
         self.generator = Generator()
         self.generator_optimizer = torch.optim.Adam(self.generator.parameters(),
-                                                    1e-4, (0.5, 0.99))
+                                                    2.5e-5, (0.5, 0.99))
         self.discriminator_optimizer = torch.optim.Adam(self.discriminator.parameters(),
                                                         1e-4, (0.5, 0.99))
         self.loss = torch.nn.BCELoss()
@@ -28,12 +28,15 @@ class SceneGenerator:
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.generator.to(device)
         self.discriminator.to(device)
+
         ug = []
         ud = []
+
         current_datetime = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M")
         folder_name = os.path.join("saved_models", current_datetime)
         os.makedirs(folder_name, exist_ok=True)
         for epoch in range(epochs):
+            self.generator.train()
             start = time_ns()
             gen_loss_list = []
             disc_loss_list = []
@@ -85,7 +88,7 @@ class SceneGenerator:
                 disc_loss_list.append(d_loss)
                 with torch.no_grad():
                     ug.append(
-                        [((1e-3 * p.grad).std() / p.data.std()).log10().item() for p in self.generator.parameters()])
+                        [((1e-4 * p.grad).std() / p.data.std()).log10().item() for p in self.generator.parameters()])
                     ud.append([((1e-4 * p.grad).std() / p.data.std()).log10().item() for p in
                                self.discriminator.parameters()])
 
@@ -100,7 +103,7 @@ class SceneGenerator:
             print((f"{epoch}:"
                    f"[D loss: {d_loss:.4f}] [G loss: {g_loss:.4f}] "
                    f"[Time: {(end - start) * 0.000000001:.3f}s]") +
-                  "" if not fid else f"[FID: {fid.compute()}]")
+                  ("" if not fid else f"[FID: {fid.compute()}]"))
 
             if epoch % params.sample_interval == 0:
                 self.sample_images(device)
