@@ -23,7 +23,7 @@ class Generator(nn.Module):
 
     def forward(self, x):
         x = self.input(x)
-        x = F.relu(x)
+        x = F.leaky_relu(x, 0.2)
         x = x.view(x.size(0), params.generator_starting_channels, 2, 2)
         x = self.conv1(x)
         x = self.norm1(x)
@@ -44,9 +44,9 @@ class Generator(nn.Module):
     def _initialize_weights(self):
         for m in self.modules():
             if isinstance(m, nn.ConvTranspose2d):
-                nn.init.kaiming_normal_(m.weight, mode='fan_in', nonlinearity='relu')
+                nn.init.kaiming_normal_(m.weight, mode='fan_in', nonlinearity='leaky_relu')
             elif isinstance(m, nn.Linear):
-                nn.init.kaiming_normal_(m.weight, mode='fan_in', nonlinearity='relu')
+                nn.init.kaiming_normal_(m.weight, mode='fan_in', nonlinearity='leaky_relu')
                 nn.init.constant_(m.bias, 0)
             elif isinstance(m, nn.BatchNorm2d):
                 nn.init.constant_(m.weight, 1)

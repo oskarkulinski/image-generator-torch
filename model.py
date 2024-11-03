@@ -88,7 +88,7 @@ class SceneGenerator:
                 disc_loss_list.append(d_loss)
                 with torch.no_grad():
                     ug.append(
-                        [((1e-4 * p.grad).std() / p.data.std()).log10().item() for p in self.generator.parameters()])
+                        [((2.5e-5 * p.grad).std() / p.data.std()).log10().item() for p in self.generator.parameters()])
                     ud.append([((1e-4 * p.grad).std() / p.data.std()).log10().item() for p in
                                self.discriminator.parameters()])
 
