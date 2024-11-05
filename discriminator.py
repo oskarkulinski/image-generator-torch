@@ -9,13 +9,13 @@ class Discriminator(nn.Module):
     def __init__(self):
         super(Discriminator, self).__init__()
         self.conv1 = nn.Conv2d(3, 256, kernel_size=3, stride=2, padding=1)
-        self.norm1 = nn.BatchNorm2d(256)
+        self.norm1 = nn.LayerNorm(256)
         self.conv2 = nn.Conv2d(256, 128, kernel_size=3, stride=2, padding=1)
-        self.norm2 = nn.BatchNorm2d(128)
+        self.norm2 = nn.LayerNorm(128)
         self.conv3 = nn.Conv2d(128, 64, kernel_size=3, stride=2, padding=1)
-        self.norm3 = nn.BatchNorm2d(64)
+        self.norm3 = nn.LayerNorm(64)
         self.conv4 = nn.Conv2d(64, 32, kernel_size=3, stride=2, padding=1)
-        self.norm4 = nn.BatchNorm2d(32)
+        self.norm4 = nn.LayerNorm(32)
         self.linear = nn.Linear(32 * 2 * 2, 1)
         self._initialize_weights()
 

@@ -10,13 +10,13 @@ class Generator(nn.Module):
         channels = params.generator_starting_channels
         self.input = nn.Linear(params.noise_dim, channels * 2 * 2)
         self.conv1 = nn.ConvTranspose2d(channels, channels * 2, 3, 2, padding=1, output_padding=1)
-        self.norm1 = nn.BatchNorm2d(channels * 2)
+        self.norm1 = nn.LayerNorm(channels * 2)
         self.conv2 = nn.ConvTranspose2d(channels * 2, channels * 4, 3, 2, padding=1, output_padding=1)
-        self.norm2 = nn.BatchNorm2d(channels * 4)
+        self.norm2 = nn.LayerNorm(channels * 4)
         self.conv3 = nn.ConvTranspose2d(channels * 4, channels * 8, 3, 2, padding=1, output_padding=1)
-        self.norm3 = nn.BatchNorm2d(channels * 8)
+        self.norm3 = nn.LayerNorm(channels * 8)
         self.conv4 = nn.ConvTranspose2d(channels * 8, channels * 16, 3, 2, padding=1, output_padding=1)
-        self.norm4 = nn.BatchNorm2d(channels * 16)
+        self.norm4 = nn.LayerNorm(channels * 16)
         self.output = nn.Conv2d(channels * 16, 3, 3, 1, 1)
 
         self._initialize_weights()
