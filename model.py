@@ -1,5 +1,6 @@
 import torch
 import matplotlib.pyplot as plt
+import matplotlib
 import datetime
 from time import time_ns
 import os
@@ -17,7 +18,7 @@ class SceneGenerator:
         self.discriminator = Discriminator()
         self.generator = Generator()
         self.generator_optimizer = torch.optim.Adam(self.generator.parameters(),
-                                                    2.5e-5, (0.5, 0.99))
+                                                    2.5e-3, (0.5, 0.99))
         self.discriminator_optimizer = torch.optim.Adam(self.discriminator.parameters(),
                                                         1e-4, (0.5, 0.99))
         self.loss = torch.nn.BCELoss()
@@ -25,10 +26,11 @@ class SceneGenerator:
         # noise used for displaying images, set on init to showcase how the generated images change between epochs
 
     def train(self, train_dataset, epochs):
+        matplotlib.use('TkAgg')
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.generator.to(device)
         self.discriminator.to(device)
-
+        
         ug = []
         ud = []
 
@@ -132,6 +134,9 @@ class SceneGenerator:
                 os.makedirs(sub_folder_name, exist_ok=True)
                 self.save_models(sub_folder_name, epoch)
 
+    plt.ioff() # Turn off interactive mode to prevent further blocking after training
+    plt.show()
+
     def save_models(self, folder_name, epoch):
         torch.save(self.discriminator.state_dict(), os.path.join(folder_name, "discriminator.pt"))
         torch.save(self.generator.state_dict(), os.path.join(folder_name, "generator.pt"))
@@ -169,3 +174,4 @@ class SceneGenerator:
             plt.axis("off")
             plt.imshow(grid)
             plt.show()
+            plt.pause(0.001) 
