@@ -8,15 +8,15 @@ import parameters as params
 class Discriminator(nn.Module):
     def __init__(self):
         super(Discriminator, self).__init__()
-        self.conv1 = nn.Conv2d(3, 256, kernel_size=3, stride=2, padding=1)
-        self.norm1 = nn.LayerNorm(256)
-        self.conv2 = nn.Conv2d(256, 128, kernel_size=3, stride=2, padding=1)
-        self.norm2 = nn.LayerNorm(128)
-        self.conv3 = nn.Conv2d(128, 64, kernel_size=3, stride=2, padding=1)
-        self.norm3 = nn.LayerNorm(64)
-        self.conv4 = nn.Conv2d(64, 32, kernel_size=3, stride=2, padding=1)
-        self.norm4 = nn.LayerNorm(32)
-        self.linear = nn.Linear(32 * 2 * 2, 1)
+        self.conv1 = nn.Conv2d(3, 64, kernel_size=3, stride=2, padding=1)
+        self.norm1 = nn.LayerNorm(64)
+        self.conv2 = nn.Conv2d(64, 64, kernel_size=3, stride=2, padding=1)
+        self.norm2 = nn.LayerNorm(64)
+        self.conv3 = nn.Conv2d(64, 32, kernel_size=3, stride=2, padding=1)
+        self.norm3 = nn.LayerNorm(32)
+        self.conv4 = nn.Conv2d(32, 16, kernel_size=3, stride=2, padding=1)
+        self.norm4 = nn.LayerNorm(16)
+        self.linear = nn.Linear(16 * 8 * 8, 1)
         self._initialize_weights()
 
     def forward(self, x):
@@ -32,7 +32,7 @@ class Discriminator(nn.Module):
         x = self.conv4(x)
         x = self.norm4(x.permute(0, 2, 3, 1)).permute(0, 3, 1, 2)
         x = F.leaky_relu(x, 0.2)
-        x = x.view(x.size(0), -1)
+        x = x.reshape(x.size(0), -1)
         x = self.linear(x)
         x = F.sigmoid(x)
         return x
